@@ -28,6 +28,7 @@ class BlogList extends Component
     }
     public function updatedBlogCategoryFilter($value)
     {
+        \Log::info("CategoryFilter: ". $value);
         if ($value == null) return;
         $this->filterable['blog_tags.tag_id'] = json_decode($value)->id;
     }

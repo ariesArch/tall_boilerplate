@@ -20,13 +20,13 @@ dropdown_triggers.forEach((dropdown_trigger) => {
   });
 
   window.addEventListener("click", function (e) {
-    console.log('DM:' , dropdown_menu)
-    console.log('Target:' , e.target)
-    console.log('Trigger:' , dropdown_trigger)
-    console.log('InMenu?:' ,!dropdown_menu.contains(e.target))
-    console.log('InDT?:' ,!dropdown_trigger.contains(e.target))
+    // console.log('DM:' , dropdown_menu)
+    // console.log('Target:' , e.target)
+    // console.log('Trigger:' , dropdown_trigger)
+    // console.log('InMenu?:' ,!dropdown_menu.contains(e.target))
+    // console.log('InDT?:' ,!dropdown_trigger.contains(e.target))
     if (!dropdown_menu.contains(e.target) && !dropdown_trigger.contains(e.target)) {
-      console.log("Willing")
+      // console.log("Willing")
       if (dropdown_trigger.getAttribute("aria-expanded") == "true") {
         console.error("TRiggerClick")
         dropdown_trigger.click();

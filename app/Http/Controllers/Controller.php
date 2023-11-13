@@ -12,6 +12,7 @@ class Controller extends BaseController
 
     protected function checkWebGate($permission) 
     {
+        \Log::info("Permission: ". Gate::denies($permission));
         abort_if(Gate::denies($permission), 403);
     }
 }

@@ -15,7 +15,7 @@ class BlogController extends Controller
     {
         // abort_if(Gate::denies('list_blog'), 403);
         // abort_if(Gate::denies('access-blog'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $this->checkWebGate('access-user');
+        $this->checkWebGate('access-blog');
         return view('blogs.index');
     }
 }

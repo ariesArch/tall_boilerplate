@@ -23,6 +23,7 @@ class FilterQueryBuilder
      */
     public function apply($query, $data)
     {
+        \Log::info('SearchFilter: '. print_r($data,true));
         $this->model = $query->getModel();
         $this->table = $this->model->getTable();
         if (isset($data['search'])) {
