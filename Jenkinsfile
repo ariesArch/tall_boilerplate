@@ -1,5 +1,8 @@
 pipeline {
-    agent any
+    // agent any
+    agent {
+    label 'ubuntu1-agent1' 
+    }
     stages {
         stage("Verify tooling") {
              steps {
