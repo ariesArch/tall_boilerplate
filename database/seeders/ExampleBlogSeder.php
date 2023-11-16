@@ -58,7 +58,7 @@ class ExampleBlogSeder extends Seeder
         ];
         Tag::insert($tag_data);
         BlogCategory::insert($category_data);
-        $blogs = Blog::factory(1000)->create();
+        $blogs = Blog::factory(100)->create();
         $tags = Tag::all();
         $blogs->each(function ($blog) use ($tags) {
             $blog->blogTags()->attach(

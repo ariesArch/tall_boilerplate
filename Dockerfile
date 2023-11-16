@@ -47,7 +47,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     && rm -rf /var/list/apt/* \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
-
+# Install Node.js 18
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs
 # create document root, fix permissions for www-data user and change owner to www-data
 RUN mkdir -p $APP_HOME/public && \
     mkdir -p /home/$USERNAME && chown $USERNAME:$USERNAME /home/$USERNAME \
@@ -78,6 +80,7 @@ USER ${USERNAME}
 COPY --chown=${USERNAME}:${USERNAME} . $APP_HOME/
 # COPY --chown=${USERNAME}:${USERNAME} .env.$ENV $APP_HOME/.env
 # RUN mv $APP_HOME/.env.$ENV $APP_HOME/.env
+COPY .env $APP_HOME/.env
 
 # Create the storage directory and set proper permissions
 # RUN mkdir -p $APP_HOME/storage/logs && \
@@ -85,13 +88,12 @@ COPY --chown=${USERNAME}:${USERNAME} . $APP_HOME/
 # RUN chmod -R 775 $APP_HOME/storage/*
 # RUN chmod -R 775 $APP_HOME/bootstrap
 
-
 # install all PHP dependencies
 RUN if [ "$BUILD_ARGUMENT_ENV" = "dev" ] || [ "$BUILD_ARGUMENT_ENV" = "test" ]; then COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress; \
     else COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress --no-dev; \
     fi
 
-# COPY docker/general/wait_for_it.sh /usr/local/bin/wait_for_it
-# # RUN chmod +x /usr/local/bin/wait_for_it
-# ENTRYPOINT ["wait_for_it", "database:33061", "--timeout=50", "--", "docker/general/entrypoint.sh"]
-# USER root
+COPY docker/general/wait_for_it.sh /usr/local/bin/wait_for_it
+RUN chmod +x /usr/local/bin/wait_for_it
+ENTRYPOINT ["wait_for_it", "mysql:33061", "--timeout=50", "--", "docker/general/entrypoint.sh"]
+USER root
