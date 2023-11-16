@@ -97,4 +97,5 @@ RUN if [ "$BUILD_ARGUMENT_ENV" = "dev" ] || [ "$BUILD_ARGUMENT_ENV" = "test" ]; 
 # RUN chmod +x /usr/local/bin/wait_for_it
 # ENTRYPOINT ["wait_for_it", "mysql:33061", "--timeout=50", "--", "docker/general/entrypoint.sh"]
 # USER root
+RUN chmod /docker/general/entrypoint.sh
 ENTRYPOINT ["docker/general/entrypoint.sh"]
