@@ -93,7 +93,11 @@ COPY .env $APP_HOME/.env
 RUN if [ "$BUILD_ARGUMENT_ENV" = "dev" ] || [ "$BUILD_ARGUMENT_ENV" = "test" ]; then COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress; \
     else COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress --no-dev; \
     fi
-
+npm install
+npm run build
+php artisan migrate
+php artisan optimize:clear
+php artisan view:cache
 # COPY docker/general/entrypoint.sh /docker/general/entrypoint.sh
 # RUN chmod +x /docker/general/entrypoint.sh
 # ENTRYPOINT ["docker/general/entrypoint.sh"]
