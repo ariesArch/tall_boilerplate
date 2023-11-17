@@ -95,6 +95,6 @@ RUN if [ "$BUILD_ARGUMENT_ENV" = "dev" ] || [ "$BUILD_ARGUMENT_ENV" = "test" ]; 
     fi
 # COPY docker/general/entrypoint.sh /docker/general/entrypoint.sh
 # RUN chmod +x /docker/general/entrypoint.sh
-COPY docker/general/entrypoint.sh /usr/local/bin/
+COPY --chown=${USERNAME}:${USERNAME} ./docker/general/entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
