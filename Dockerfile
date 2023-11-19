@@ -61,10 +61,10 @@ RUN mkdir -p $APP_HOME/public && \
 COPY ./docker/$BUILD_ARGUMENT_ENV/php-fpm.conf /usr/local/etc/php-fpm.d/php-fpm.conf
 COPY ./docker/$BUILD_ARGUMENT_ENV/php.ini /usr/local/etc/php/php.ini
 
-# install Xdebug in case dev/test environment
-COPY ./docker/general/do_we_need_xdebug.sh /tmp/
-COPY ./docker/dev/xdebug-${XDEBUG_CONFIG}.ini /tmp/xdebug.ini
-RUN chmod u+x /tmp/do_we_need_xdebug.sh && /tmp/do_we_need_xdebug.sh
+# # install Xdebug in case dev/test environment
+# COPY ./docker/general/do_we_need_xdebug.sh /tmp/
+# COPY ./docker/dev/xdebug-${XDEBUG_CONFIG}.ini /tmp/xdebug.ini
+# RUN chmod u+x /tmp/do_we_need_xdebug.sh && /tmp/do_we_need_xdebug.sh
 
 # install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -78,23 +78,10 @@ USER ${USERNAME}
 
 # copy source files and config file
 COPY --chown=${USERNAME}:${USERNAME} . $APP_HOME/
-# COPY --chown=${USERNAME}:${USERNAME} .env.$ENV $APP_HOME/.env
-# RUN mv $APP_HOME/.env.$ENV $APP_HOME/.env
 COPY .env $APP_HOME/.env
 
-# Create the storage directory and set proper permissions
-# RUN mkdir -p $APP_HOME/storage/logs && \
-#     chown -R ${USERNAME}:${USERNAME} $APP_HOME/storage
-# RUN chmod -R 775 $APP_HOME/storage/*
-# RUN chmod -R 775 $APP_HOME/bootstrap
-
-# install all PHP dependencies
-# install all PHP dependencies
-RUN if [ "$BUILD_ARGUMENT_ENV" = "dev" ] || [ "$BUILD_ARGUMENT_ENV" = "test" ]; then COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress; \
-    else COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress --no-dev; \
-    fi
-# COPY docker/general/entrypoint.sh /docker/general/entrypoint.sh
-# RUN chmod +x /docker/general/entrypoint.sh
-COPY --chown=${USERNAME}:${USERNAME} ./docker/general/entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+# # install all PHP dependencies
+# RUN if [ "$BUILD_ARGUMENT_ENV" = "dev" ] || [ "$BUILD_ARGUMENT_ENV" = "test" ]; then COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress; \
+#     else COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader --no-interaction --no-progress --no-dev; \
+#     fi
+USER root

@@ -49,3 +49,36 @@ ifeq ($(INSIDE_DOCKER_CONTAINER), 0)
 else
 	$(ERROR_ONLY_FOR_HOST)
 endif
+exec:
+ifeq ($(INSIDE_DOCKER_CONTAINER), 1)
+	@$$cmd
+else
+	@HOST_UID=$(HOST_UID) HOST_GID=$(HOST_GID) WEB_PORT_HTTP=$(WEB_PORT_HTTP) WEB_PORT_SSL=$(WEB_PORT_SSL) XDEBUG_CONFIG=$(XDEBUG_CONFIG) MYSQL_VERSION=$(MYSQL_VERSION) INNODB_USE_NATIVE_AIO=$(INNODB_USE_NATIVE_AIO) SQL_MODE=$(SQL_MODE) docker-compose $(PROJECT_NAME) exec $(OPTION_T) $(PHP_USER) laravel $$cmd
+endif
+exec-bash:
+ifeq ($(INSIDE_DOCKER_CONTAINER), 1)
+	@bash -c "$(cmd)"
+else
+	@HOST_UID=$(HOST_UID) HOST_GID=$(HOST_GID) WEB_PORT_HTTP=$(WEB_PORT_HTTP) WEB_PORT_SSL=$(WEB_PORT_SSL) XDEBUG_CONFIG=$(XDEBUG_CONFIG) MYSQL_VERSION=$(MYSQL_VERSION) INNODB_USE_NATIVE_AIO=$(INNODB_USE_NATIVE_AIO) SQL_MODE=$(SQL_MODE) docker-compose $(PROJECT_NAME) exec $(OPTION_T) $(PHP_USER) laravel bash -c "$(cmd)"
+endif
+
+
+check-node: ## Runs all migrations for main/test databases
+	@make exec-bash cmd="node -v"
+	@make exec-bash cmd="npm -v"
+	
+build-assets: 
+	@make exec cmd="npm i"
+	@make exec cmd="npm run build"
+
+composer-install: ## Installs composer dependencies
+	@make exec-bash cmd="COMPOSER_MEMORY_LIMIT=-1 composer install --optimize-autoloader"
+migrate: ## Runs all migrations for main/test databases
+	@make exec cmd="php artisan migrate --force"
+	@make exec cmd="php artisan migrate --force --env=test"
+seed: ## Runs all seeds for test database
+	@make exec cmd="php artisan db:seed --force"
+setup-permission: # Setup admin and permissions
+	@make exec cmd="php artisan setup:permission"
+optimize:
+	@make exec cmd="php artisan optimize:clear"
